@@ -3,7 +3,7 @@
 // @namespace   https://github.com/Infinitifall/KUserscripts
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
-// @downloadURL https://raw.githubusercontent.com/Infinitifall/KUserscripts/scripts/clean_ui_aggressive.user.js
+// @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*

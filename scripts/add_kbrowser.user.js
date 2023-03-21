@@ -3,7 +3,7 @@
 // @namespace   https://github.com/Infinitifall/KUserscripts
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
-// @downloadURL https://raw.githubusercontent.com/Infinitifall/KUserscripts/scripts/add_kbrowser.user.js
+// @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
