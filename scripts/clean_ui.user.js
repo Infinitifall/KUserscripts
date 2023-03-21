@@ -49,13 +49,10 @@ div#termsInfo
 {
     font-size: 12px !important;
 }
+
 div#chatHolder
 {
     left: 10px !important;
-}
-
-div#subLogoButtons {
-    bottom: 30px !important;
 }
 
 div#menuClassContainer
@@ -169,7 +166,6 @@ img#mainLogoFace,
 .menuItem:nth-child(2),
 .menuItem:nth-child(5),
 .menuItem:nth-child(3),
-div#aHolder,
 div#gameNameHolder,
 img#mainLogo,
 div#txtBubble,
