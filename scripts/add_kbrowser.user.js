@@ -737,6 +737,7 @@ async function main2() {
 
         if (serverHolder[0] && !serverHolder[1]) {
             populate_wrapper();
+            setTimeout(populate_wrapper, 3000);  // server browser resets after a few seconds for some reason
             serverHolder[1] = true;
         }
 
