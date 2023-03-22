@@ -4,6 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
+// @version     3.0
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -731,18 +732,21 @@ async function populate_wrapper(mode_type, region_group) {
 
 
 async function main2() {
+
+    let serverHolder_bool = false;
+
     const observer = new MutationObserver(function() {
 
-        let serverHolder = [document.querySelector("#serverHolder"), false];
+        let serverHolder = document.querySelector("#serverHolder");
 
-        if (serverHolder[0] && !serverHolder[1]) {
+        if (serverHolder && !serverHolder_bool) {
             populate_wrapper();
             setTimeout(populate_wrapper, 3000);  // server browser resets after a few seconds for some reason
-            serverHolder[1] = true;
+            serverHolder_bool = true;
         }
 
 
-        if (serverHolder[1]) {
+        if (serverHolder_bool) {
             observer.disconnect();
         }
     });
@@ -769,17 +773,19 @@ function main() {
     vm_css_2.id = "vm_css_2";
     document.head.appendChild(vm_css_2);
 
+    let menuBtnBrowser_bool = false;
+
     const observer = new MutationObserver(function() {
 
-        let menuBtnBrowser = [document.querySelector("#menuBtnBrowser"), false];
+        let menuBtnBrowser = document.querySelector("#menuBtnBrowser");
 
-        if (menuBtnBrowser[0] && !menuBtnBrowser[1]) {
-            menuBtnBrowser[0].addEventListener("click", main2, false);
-            menuBtnBrowser[1] = true;
+        if (menuBtnBrowser && !menuBtnBrowser_bool) {
+            menuBtnBrowser.addEventListener("click", main2, false);
+            menuBtnBrowser_bool = true;
         }
 
 
-        if (menuBtnBrowser[1]) {
+        if (menuBtnBrowser_bool) {
             observer.disconnect();
         }
     });

@@ -4,6 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/no_extra_click.user.js
+// @version     3.0
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -11,14 +12,17 @@
 
 
 function main() {
+
+    let menuBtnBrowser_bool = false;
+
     const observer = new MutationObserver(function() {
-        let menuBtnBrowser = [document.querySelector("#menuBtnBrowser"), false];
-        if (menuBtnBrowser[0] && !menuBtnBrowser[1]) {
-            menuBtnBrowser[0].setAttribute("onclick", "playSelect(0.1);openServerWindow(1);");
-            menuBtnBrowser[1] = true;
+        let menuBtnBrowser = document.querySelector("#menuBtnBrowser");
+        if (menuBtnBrowser && !menuBtnBrowser_bool) {
+            menuBtnBrowser.setAttribute("onclick", "playSelect(0.1);openServerWindow(1);");
+            menuBtnBrowser_bool = true;
         }
 
-        if (menuBtnBrowser[1]) {
+        if (menuBtnBrowser_bool) {
             observer.disconnect();
         }
     });

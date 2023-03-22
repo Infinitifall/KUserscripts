@@ -4,6 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
+// @version     3.0
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -174,8 +175,6 @@ div#loadTipsHolder,
 div#loadInfoLHolder,
 div#menuPopHider,
 div#frvrMenuMobileHolder,
-div#menuPopHider,
-div#frvrMenuMobileHolder,
 div#endBPLayout
 {
     display: none !important;
@@ -190,18 +189,30 @@ function main() {
     vm_css_1_1.id = "vm_css_1_1";
     document.head.appendChild(vm_css_1_1);
 
-    // if mod or map is using a custom stylesheet, remove customCSS
-    const observer = new MutationObserver(function() {
-        let customCSS = [document.getElementById("customCSS"), false];
-        let menuPopHider = [document.getElementById("menuPopHider"), false];
+    let customCSS_bool = false
+    let bundlePop_bool = false;
 
-        if (customCSS[0] && !customCSS[1]) {
+    const observer = new MutationObserver(function() {
+        let customCSS = document.getElementById("customCSS");
+        let bundlePop = document.getElementById("bundlePop");
+
+        if (customCSS && !customCSS_bool) {
+            // if mod or map is using a custom stylesheet, remove customCSS
             // vm_css_1_1.remove();
-            customCSS[0].remove();
-            customCSS[1] = true;
+            customCSS.remove();
+            customCSS_bool = true;
         }
 
-        if (customCSS[1] && menuPopHider[1]) {
+        if (bundlePop && !bundlePop_bool) {
+            // clear popups
+            if (document.getElementById('bundlePop').children.length > 0) {
+                setTimeout(function() { location.assign("javascript:clearPops();"); }, 1000);
+                // location.assign("javascript:clearPops();");
+                bundlePop_bool = true;
+            }
+        }
+
+        if (customCSS_bool && bundlePop_bool) {
             observer.disconnect();
         }
     });
