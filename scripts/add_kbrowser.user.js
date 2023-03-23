@@ -4,10 +4,13 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     3.0
+// @version     3.1
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
+// @exclude     https://krunker.io/social.html*
+// @exclude     https://krunker.io/editor.html*
+// @exclude     https://krunker.io/viewer.html*
 // ==/UserScript==
 
 
@@ -760,7 +763,7 @@ async function main2() {
     observer.observe(target, config);
 
     // timeout after a few seconds
-    setTimeout(observer.disconnect, 10000);
+    setTimeout(observer.disconnect, 15000);
 
     timeout_fetching_cgs();
 }
@@ -799,7 +802,7 @@ function main() {
     observer.observe(target, config);
 
     // timeout after a few seconds
-    setTimeout(observer.disconnect, 10000);
+    setTimeout(observer.disconnect, 15000);
 }
 
 

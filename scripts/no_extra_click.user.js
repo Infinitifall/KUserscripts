@@ -4,10 +4,13 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/no_extra_click.user.js
-// @version     3.0
+// @version     3.1
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
+// @exclude     https://krunker.io/social.html*
+// @exclude     https://krunker.io/editor.html*
+// @exclude     https://krunker.io/viewer.html*
 // ==/UserScript==
 
 
@@ -34,6 +37,9 @@ function main() {
     };
 
     observer.observe(target, config);
+
+    // timeout after a few seconds
+    setTimeout(observer.disconnect, 15000);
 }
 
 
