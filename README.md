@@ -1,8 +1,10 @@
 # KUserscripts
 
-Userscripts are small programs can run in your browser and make changes to websites you visit, such as adding extra features or changing their style. This is a collection of useful userscriptsm, inspired by personal use.
+Userscripts are small programs that run in your web browser and make local changes to websites you visit such as adding features or changing styles.
 
-First make sure you have a userscript manager such as Violentmonkey installed. Greasemonkey and Tampermonkey work but are [not recommended](https://www.reddit.com/r/firefox/comments/6hs59w/tampermonkey_has_google_analytics_enabled_by/). Get Violentmonkey for [Google Chrome, Chromium, Brave Browser](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag), [Firefox](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/) or [Edge](https://microsoftedge.microsoft.com/addons/detail/violentmonkey/eeagobfjdenkkddmbclomhiblgggliao).
+## Installation
+
+Install a userscript manager extension for your web browser such as Violentmonkey, Greasemonkey or Tampermonkey. Click to install Violentmonkey for [Google Chrome, Chromium, Brave Browser](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag), [Firefox](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/) or [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/violentmonkey/eeagobfjdenkkddmbclomhiblgggliao). Note that Tampermonkey is closed source and has [serious privacy concerns](https://www.reddit.com/r/firefox/comments/6hs59w/tampermonkey_has_google_analytics_enabled_by/) and is therefore **not recommended**.
 
 
 ## Click to install [clean_ui](https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui.user.js) or [clean_ui_aggressive](https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js)
@@ -30,9 +32,9 @@ Gets rid of the extraneous chooser popup when clicking on the server finder, ins
 
 ## Click to install [clean_ui_social](https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_social.user.js)
 
-Removes clutter from social hub
+Removes clutter from social hub.
 
 
 ## Click to install [no_twitch](https://github.com/Infinitifall/KUserscripts/raw/main/scripts/no_twitch.user.js)
 
-Removes the twitch embed from the social hub, saving bandwidth and performance
+Removes the Twitch embed from the social hub, saving performance. To save bandwidth you'll need to install a [request blocker](https://addons.mozilla.org/en-US/firefox/addon/request-blocker-we/) and block Twitch domains.
