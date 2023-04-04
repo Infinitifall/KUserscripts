@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_social.user.js
-// @version     3.1
+// @version     3.2
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/social.html*
@@ -31,6 +31,4 @@ function main() {
 }
 
 
-window.onload = function(){
-    main();
-};
+main();
