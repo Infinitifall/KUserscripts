@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
-// @version     3.1
+// @version     4.2
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -15,53 +15,45 @@
 
 
 var style_1_1 = `
-signedInHeaderBar,
-div#menuItemContainer,
-div#headerRight,
-div#termsInfo,
-div#signedInHeaderBar
+div#headerRightSocial,
+div#streamContainer,
+div#signedOutHeaderBar,
+div#inviteButton,
+div#menuBtnJoin,
+div#policeButton,
+div#tlInfHold,
+.terms:nth-child(1),
+.terms:nth-child(3),
+.verticalSeparatorInline,
+.menuItem:nth-child(2),
+.menuItem:nth-child(5),
+.menuItem:nth-child(3),
+div#txtBubble,
+img#loadEditrBtn,
+div#loadTipsHolder,
+div#loadInfoLHolder,
+div#menuPopHider,
+div#frvrMenuMobileHolder,
+div#endBPLayout,
+div#gameNameHolder,
+div#seasonLabel,
+div#merchHolder,
+.progressBar,
+div#mLevelCont,
+div#krInfo,
+.junkInfo,
+div#signedInHeaderBar .verticalSeparator
 {
-    background: #000b !important;
+    display:none !important;
 }
 
-.classCard
-{
-    background: rgb(0,0,0,0.25) !important;
+div#menuItemContainer {
+    top:0;
 }
 
-div#signedInHeaderBar
-{
-    height: 50px !important;
-}
-
-div#mailContainer
-{
-    padding-right: 20px !important;
-}
-
-.krInfo {
-    padding-top: 12px !important;
-}
-
-div#termsInfo
-{
-    padding: 5px 10px !important;
-    height: 25px !important;
-}
-
-.terms
-{
-    font-size: 12px !important;
-}
-
-div#chatHolder
-{
-    left: 10px !important;
-}
-
-div#menuClassContainer
-{
-    right: -170px !important;
+div#spectButton {
+    top: 20px !important;
+    left: calc(100% - 250px) !important;
 }
 
 div#menuItemContainer
@@ -73,114 +65,48 @@ div#menuItemContainer
     border-radius: 0 20px 20px 0 !important;
 }
 
-div#menuBtnBrowser
-{
-    margin-top: 20px !important;
+div#chatHolder {
+    left: 10px !important;
 }
 
-div#spectButton
-{
-    top: 20px !important;
-    left: calc(100% - 250px) !important;
+div#voiceDisplay {
+    left: 360px !important;
 }
 
-div#selectorContainer
-{
-    background-color: transparent !important;
+div#termsInfo {
+    padding: 5px 10px !important;
+    height: 25px !important;
 }
 
-.settName,
-.settName .settNameIn
-{
-    border-bottom: none !important;
+.terms {
+    font-size: 12px !important;
 }
 
-.mapListItem,
-.setHed
+div#signedInHeaderBar {
+    height: 50px !important;
+}
+
+div#mailContainer {
+    padding-right: 20px !important;
+}
+
+signedInHeaderBar,
+div#menuItemContainer,
+div#headerRight,
+div#termsInfo,
+div#signedInHeaderBar
 {
+    background: #000b !important;
+}
+
+div#mapInfoHld {
     border: none !important;
 }
 
-.pSt
-{
-    border: 2px solid transparent !important;
-}
-
-.sliderVal,
-.selectorItem,
-.custContainer
-{
-    border: 3px solid transparent !important;
-}
-
-.custSubContainer
-{
-    border-top: 0 solid transparent !important;
-    border-left: 3px solid transparent !important;
-    border-right: 3px solid transparent !important;
-    border-bottom: 0 solid transparent !important;
-}
-
-.setSugBox2,
-.skinCard
-{
-    border: 4px solid transparent !important;
-}
-
-.noBtnCard,
-.streakCard
-{
-    border: 5px solid transparent !important;
-}
-
-.serverHostOp
-{
-    border: 6px solid transparent !important;
-}
-
-.classXPBar,
-div#menuLvlHold,
-div#menuUsernameContainer,
-.mainJunkInfo,
-img#menuRnkDisp,
-div#seasonLabel,
-div#braveWarning,
-div#newUserGuide,
-div#signedOutHeaderBar,
-.verticalSeparatorInline,
-div#rankedSoonTm,
-div#policeButton,
-.verticalSeparator,
-.terms.standout,
-div#inviteButton,
-div#menuBtnJoin,
-div#streamContainer,
-div#rankedBlog,
-img#editorBtnM,
-.menuSocialB,
-div#newsHolder,
-div#updateAd,
-div#menuBtnRanked,
-div#voiceDisplay,
-div#tlInfHold,
-div#mLevelCont,
-.terms:nth-child(3),
-.bigMFeatHold,
-img#mainLogoFace,
-.menuItem:nth-child(2),
-.menuItem:nth-child(5),
-.menuItem:nth-child(3),
-div#gameNameHolder,
-img#mainLogo,
-div#txtBubble,
-img#loadEditrBtn,
-div#loadTipsHolder,
-div#loadInfoLHolder,
-div#menuPopHider,
-div#frvrMenuMobileHolder,
-div#endBPLayout
-{
-    display: none !important;
+.krInfo {
+    padding-top: 12px !important;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
 }
 `;
 
@@ -233,6 +159,4 @@ function main() {
 }
 
 
-window.onload = function(){
-    main();
-};
+main();
