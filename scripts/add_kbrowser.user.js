@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     3.2
+// @version     3.3
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -729,8 +729,11 @@ async function populate_wrapper(mode_type, region_group) {
         update_cgs = false;
     }
 
-    let cgs_local = sort_cgs(cgs_global, mode_type, region_group);
-    populate_table(cgs_local);
+    if (document.getElementById("cgs") === null) {
+        // only populate if table doesn't already exist
+        let cgs_local = sort_cgs(cgs_global, mode_type, region_group);
+        populate_table(cgs_local);
+    }
 }
 
 
@@ -744,7 +747,16 @@ async function main2() {
 
         if (serverHolder && !serverHolder_bool) {
             populate_wrapper();
-            setTimeout(populate_wrapper, 3000);  // server browser resets after a few seconds for some reason
+            // server browser resets after a few seconds for some reason
+            setTimeout(populate_wrapper, 1000);
+            setTimeout(populate_wrapper, 2000);
+            setTimeout(populate_wrapper, 3000);
+            setTimeout(populate_wrapper, 4000);
+            setTimeout(populate_wrapper, 5000);
+            setTimeout(populate_wrapper, 6000);
+            setTimeout(populate_wrapper, 7000);
+            setTimeout(populate_wrapper, 8000);
+            setTimeout(populate_wrapper, 9000);
             serverHolder_bool = true;
         }
 
