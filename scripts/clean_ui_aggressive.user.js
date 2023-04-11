@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
-// @version     4.2
+// @version     4.22
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -32,7 +32,10 @@ div#txtBubble,
 img#loadEditrBtn,
 div#loadTipsHolder,
 div#loadInfoLHolder,
-div#menuPopHider,
+div#bundlePop,
+div#premiumPop,
+.dropsPop,
+div#popupBack,
 div#frvrMenuMobileHolder,
 div#endBPLayout,
 div#gameNameHolder,
