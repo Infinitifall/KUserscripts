@@ -50,7 +50,7 @@ function main() {
     observer.observe(target, config);
 
     // timeout after a few seconds
-    setTimeout(observer.disconnect, 15000);
+    setTimeout(function() { observer.disconnect(); }, 30000);
 }
 
 
