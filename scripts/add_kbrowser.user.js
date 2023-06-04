@@ -16,11 +16,9 @@
 
 
 /*
-Portions of the code have been sourced from https://github.com/Infinitifall/KBrowser which is under the MIT license:
+Portions of the code have been sourced from other software (licenses below):
 
-MIT License
-
-Copyright (c) 2023 Infinitifall
+1. From Infinitifall/KBrowser, MIT License, Copyright (c) 2023 Infinitifall
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
