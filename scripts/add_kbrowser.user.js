@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     3.3
+// @version     3.4
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -460,11 +460,12 @@ function polish_cgs(cgs, mode_type, region_group) {
         "TOK":  ["Asia",        3,      3],
         "SEO":  ["Asia",        3,      3],
         "SYD":  ["Australia",   4,      7],
-        "BLR":  ["India",       5,      6],
+        "BLR":  ["India",       5,      7],
+        "MBI":  ["India",       5,      7],
         "BRZ":  ["Brazil",      6,      5],
         "MX":   ["Mexico",      7,      2],
-        "AFR":  ["Africa",      8,      1],
-        "BHN":  ["Arabia",      9,      1]
+        "AFR":  ["Africa",      8,      2],
+        "BHN":  ["Arabia",      9,      5]
     };
 
     //  region_group / preference (used for ordering)
@@ -474,10 +475,10 @@ function polish_cgs(cgs, mode_type, region_group) {
         ["eu",          11],
         ["asia",        9],
         ["au",          7],
-        ["ind",         6],
+        ["ind",         7],
         ["brz",         6],
-        ["mx",          4],
-        ["afr",         4],
+        ["mx",          2],
+        ["afr",         3],
         ["arab",        4],
     ]
 
