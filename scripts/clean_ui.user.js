@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui.user.js
-// @version     4.22
+// @version     5.1
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -45,7 +45,9 @@ div#merchHolder,
 div#mLevelCont,
 div#krInfo,
 .junkInfo,
-div#signedInHeaderBar .verticalSeparator
+div#signedInHeaderBar .verticalSeparator,
+div#aContainer,
+div#topRightAdHolder
 {
     display:none !important;
 }
