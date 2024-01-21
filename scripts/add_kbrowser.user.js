@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     16.0
+// @version     16.1
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -51,6 +51,7 @@ var style_2 = `
 .cgs-table > thead > tr > td,
 .cgs-table > tbody > tr > td {
     padding: 0 0.5em 0 0.5em;
+    height: 35px;
 }
 
 .cgs-table > thead > tr,
@@ -66,10 +67,9 @@ var style_2 = `
 
 .wrapper-browser {
     width: auto;
-    height: 2000px;
-    max-height: calc(100vh - 6em);
+    height: auto;
     /* margin: auto; */
-    margin-top: 2em;
+    margin-top: 0;
     margin-left: 0.5em;
     padding: 1em 1em;
     border-radius: 0.5em;
@@ -239,7 +239,6 @@ function populate_table(cgs) {
         for (let j = 0; j < span_elements.length; j++) {
             let temp_a = document.createElement("a");
             temp_a.href = cg_link;
-            temp_a.target = "_blank";
             temp_a.rel = "noreferrer";
             temp_a.appendChild(span_elements[j]);
             a_elements.push(temp_a);
