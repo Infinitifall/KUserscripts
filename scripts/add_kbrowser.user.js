@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     16.1
+// @version     17
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -191,6 +191,7 @@ async function update_cgs_global() {
 
     // update cgs_global
     cgs_global = await response.json();
+    return status;
 }
 
 
