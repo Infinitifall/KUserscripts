@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     3.4
+// @version     16.0
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -42,40 +42,40 @@ SOFTWARE.
 var style_2 = `
 .cgs-table {
     border-collapse: collapse;
-    border: 0px;
+    border: 0;
+    margin: auto;
 }
 
-.cgs-table th,
-.cgs-table td {
-    padding: 0.3em 0.5em;
-    display: auto;
-    height: auto;
-    color: #333;
+.cgs-table > thead > tr > th,
+.cgs-table > tbody > tr > th,
+.cgs-table > thead > tr > td,
+.cgs-table > tbody > tr > td {
+    padding: 0 0.5em 0 0.5em;
 }
 
-.cgs-table tr:hover {
+.cgs-table > thead > tr,
+.cgs-table > tbody > tr {
+    border: none;
+}
+
+.cgs-table > thead > tr:hover,
+.cgs-table > tbody > tr:hover {
     cursor:pointer;
     background-color:#ffffff66;
 }
 
-.cgs-table tr {
-    border-bottom: none;
-    display: auto;
-    height: auto;
-    color: #333;
-}
-
 .wrapper-browser {
-    width:930px;
+    width: auto;
     height: 2000px;
     max-height: calc(100vh - 6em);
-    margin: auto;
+    /* margin: auto; */
+    margin-top: 2em;
+    margin-left: 0.5em;
     padding: 1em 1em;
     border-radius: 0.5em;
     background-color: #ffffffbb;
     overflow: hidden;
     user-select: none;
-    color: #333;
 }
 
 .wrapper-browser-inner {
@@ -83,7 +83,6 @@ var style_2 = `
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0em 0em;
-    color: #333;
 }
 
 .cg-mode { color: #bbb }
@@ -98,10 +97,12 @@ var style_2 = `
 .cg-map { color: #2b7fd3; }
 .cg-map-repeated { color: #777; }
 .cg-map-non-empty { color: #777; }
+.cg-map-empty { color: #777; }
 .cg-map-full { color: #555; }
 
-.wrapper-cg-full a span { opacity: 0.7; }
-.wrapper-cg-non-empty a span { opacity: 0.7; }
+.wrapper-cg-full { opacity: 0.8; }
+.wrapper-cg-non-empty { opacity: 0.8; }
+.wrapper-cg-empty { opacity: 0.6; }
 
 .cg-region { color: #6ca640; }
 .cg-region-us-east, .button-cgs-us-east { color: #8e3346; }
@@ -117,51 +118,43 @@ var style_2 = `
 
 .cg-players { color: #333; }
 
-.cgs-table td a { display:block; }
-.cgs-table td a:hover { text-decoration: none; }
+.cgs-stats-grandparent { margin-top: 2em; }
+.cgs-stats { color: #666; padding: 0.3em 0em; }
 
-.message-row { margin-top: 1em; }
+.cgs-table >tbody > td a { display:block; }
+.cgs-table >tbody > td a:hover { text-decoration: none; }
 
-.cgs-table  thead tr th:nth-child(1),
-.cgs-table  tbody tr td:nth-child(1) {
+.cgs-table > thead > tr > th:nth-child(1),
+.cgs-table > tbody > tr > td:nth-child(1) {
     width: 5em;
     max-width: 5em;
     min-width: 5em;
     text-align: right;
 }
 
-.cgs-table thead .cgs-table-message th:nth-child(1),
-.cgs-table tbody .cgs-table-message td:nth-child(1) {
-    padding-top: 2em;
-    padding-bottom: 1em;
-    text-align: center;
-    font-size: 20px;
-    text-decoration: underline;
-}
-
-.cgs-table thead tr th:nth-child(2),
-.cgs-table tbody tr td:nth-child(2) {
+.cgs-table > thead > tr > th:nth-child(2),
+.cgs-table > tbody > tr > td:nth-child(2) {
     width: 22em;
     max-width: 22em;
     min-width: 22em;
 }
 
-.cgs-table thead tr th:nth-child(3),
-.cgs-table tbody tr td:nth-child(3) {
+.cgs-table > thead > tr > th:nth-child(3),
+.cgs-table > tbody > tr > td:nth-child(3) {
     width: 8em;
     max-width: 8em;
     min-width: 8em;
 }
 
-.cgs-table thead tr th:nth-child(4),
-.cgs-table tbody tr td:nth-child(4) {
+.cgs-table > thead > tr th:nth-child(4),
+.cgs-table > tbody > tr td:nth-child(4) {
     width: 3em;
-    max-width: 5em;
+    max-width: 3em;
     min-width: 3em;
 }
 
-.cgs-table thead tr th:nth-child(5),
-.cgs-table tbody tr td:nth-child(5) {
+.cgs-table > thead > tr th:nth-child(5),
+.cgs-table > tbody > tr td:nth-child(5) {
     width: 1em;
     max-width: 1em;
     min-width: 1em;
@@ -178,165 +171,109 @@ div#carousel-infinite,
 
 var cgs_global;  // global source of truth for cgs
 var update_cgs = true;  // whether to fetch cgs next time
-var loaded_once = false;  // whether it was ever able to fetch json from server
+var cgs_server = "https://matchmaker.krunker.io/game-list?hostname=krunker.io";
+var show_pubs = true;  // whether to show public lobbies
 
 
 async function update_cgs_global() {
+    // fetch cgs from server
     let response;
     let status;
-    let max_tries = 5;
-
-    while ((status != 200) && (max_tries > 0)) {
-        response = await fetch("https://matchmaker.krunker.io/game-list?hostname=krunker.io");
+    let remaining_tries = 3;
+    for (let i = 0; i < remaining_tries; i++) {
+        try { response = await fetch(cgs_server); }
+        catch (e) { return null; }
         status = response.status;
-        max_tries -= 1;
+        if (status == 200) { break; }
     }
 
-    if (status == 200) {
-        cgs_global = await response.json();
+    if (status != 200) { return null; }
 
-        if (!loaded_once) {
-            loaded_once = true;
-        }
-    }
+    // update cgs_global
+    cgs_global = await response.json();
 }
 
 
-function timeout_fetching_cgs() {
+function timeout_fetching_cgs(interval) {
     update_cgs = true;
-    setTimeout(timeout_fetching_cgs, 10000);
+    setTimeout( function() {timeout_fetching_cgs}, interval);
 }
 
 
 function populate_table(cgs) {
     let table = document.getElementById("cgs");
-    let parent;
-    let serverHolder = document.getElementById("serverHolder");
-
-    if (serverHolder) {
-        table = document.createElement("table");
-        table.id = "cgs";
-        table.className = "cgs-table";
-        let greatgrandparent = serverHolder.parentNode;
-        serverHolder.remove();
-        parent = document.createElement("div");
-        parent.className = "wrapper-browser-inner";
-        let grandparent = document.createElement("div");
-        grandparent.className = "wrapper-browser";
-        grandparent.appendChild(parent);
-        greatgrandparent.appendChild(grandparent);
-
-
-    } else if (table) {
-        parent = table.parentNode;
-        parent.innerHTML = "";
-
-    } else {
-        // nothing to do, return
-        return;
-    }
-
+    // clear all contents
     table.innerHTML = "";
 
-    let first_full = false;
-    let fist_non_empty = false;
-
+    // insert all lobbies
     for (let i = 0; i < cgs.length; i++) {
         let cg = cgs[i];
 
-        // if starred custom game create a new row and populate it with custom game data
-        if (!("star" in cg)) { continue; }
+        // format lobby properties
+        let cg_link = "https://krunker.io/?game=" + cg.link;
+        let cg_mode = "cg-mode-" + cg.mode_type;
+        let cg_status = "cg-map"; if ("status" in cg) { cg_status += "-" + cg.status}
+        let cg_regions_group = "cg-region-" + cg.regions_group;
+        let cg_players = "cg-players";
+        let cg_special = "";
+        if ("password" in cg) { cg_special = "🔒" }
+        else if (cg.public == 0) { cg_special = "⛏️" }
+        else if ("verified" in cg) { cg_special = "💙"}
+        else if ("dedicated" in cg) { cg_special = "★" }
+        
+        // create nodes
+        let span_elements = new Array();
+        for (let j = 0; j <= 4; j++) { span_elements.push(document.createElement("span")); }
+        span_elements[0].className = cg_mode;
+        span_elements[0].innerHTML = cg.mode;
+        span_elements[1].className = cg_status;
+        span_elements[1].innerHTML = cg.map.replace(/[^\x00-\x7F]/g, "");
+        span_elements[2].className = cg_regions_group;
+        span_elements[2].innerHTML = cg.region;
+        span_elements[3].className = cg_players;
+        span_elements[3].innerHTML = "&nbsp;".repeat(2 - cg.players.toString().length) + cg.players.toString() + "/" + cg.total.toString();
+        span_elements[4].innerHTML = cg_special;
 
-        let row = table.insertRow(-1);
-        let cells = new Array(5);
-        for (let j = 0; j < cells.length; j++) { cells[j] = row.insertCell(j); }
-
-        let cg_link = "<a href=" + "https://krunker.io/?game=" + cg.link + ">";
-
-        let start = "";
-        let end = ""
-        if ("full" in cg) {
-            start = "<span class='wrapper-cg-full'>";
-            end = "</span>"
-
-            if (!first_full) {
-                let row_message = document.createElement("tr");
-                row_message.className = "cgs-table-message";
-                row.parentNode.insertBefore(row_message, row);
-
-                let cell = row_message.insertCell(0);
-                cell.colSpan = 50;
-                cell.innerHTML = "Full lobbies";
-
-                first_full = true;
-            }
-
-        } else if ("non_empty" in cg) {
-            start = "<span class='wrapper-cg-non-empty'>";
-            end = "</span>"
-
-            if (!fist_non_empty) {
-                let row_message = document.createElement("tr");
-                row_message.className = "cgs-table-message";
-                row.parentNode.insertBefore(row_message, row);
-
-                let cell = row_message.insertCell(0);
-                cell.colSpan = 50;
-                cell.innerHTML = "Repeat lobbies";
-
-                fist_non_empty = true;
-            }
+        // wrap nodes in <a> element
+        let a_elements = new Array();
+        for (let j = 0; j < span_elements.length; j++) {
+            let temp_a = document.createElement("a");
+            temp_a.href = cg_link;
+            temp_a.target = "_blank";
+            temp_a.rel = "noreferrer";
+            temp_a.appendChild(span_elements[j]);
+            a_elements.push(temp_a);
         }
 
-        // mode
-        cells[0].innerHTML = start + cg_link + "<span class='cg-mode-" + cg.mode_type + "'>" + cg.mode + "</span>" + "</a>" + end;
-
-        // map name
-        let cells_1_innerhtml = cg_link + "<span class='cg-map";
-        if ("full" in cg) { cells_1_innerhtml += "-full"; }
-        else if ("non_empty" in cg) { cells_1_innerhtml += "-non-empty"; }
-        else if ("repeated" in cg) { cells_1_innerhtml += "-repeated"; }
-        cells_1_innerhtml += "'>" + cg.map.replace(/[^\x00-\x7F]/g, "") + "</span>" + "</a>";
-        cells[1].innerHTML = start + cells_1_innerhtml + end;
-
-        // region
-        cells[2].innerHTML = start + cg_link + "<span class='cg-region-" + cg.region_group + "'>" + cg.region + "</span>" + "</a>" + end;
-
-        // players
-        cells[3].innerHTML = start + cg_link + "<span class='cg-players'>" + "&nbsp;".repeat(2 - cg.players.toString().length) + cg.players.toString() + "/" + cg.total.toString() + "</span>" + "</a>" + end;
-
-        //special property
-        let cells_4_innerhtml = "";
-        if ("password" in cg) { cells_4_innerhtml = "🔒" }
-        else if ("verified" in cg) { cells_4_innerhtml = "💙"}
-        else if ("dedicated" in cg) { cells_4_innerhtml = "★" }
-        cells[4].innerHTML = start + cells_4_innerhtml + end;
+        // create and populate row
+        let row = table.insertRow(-1);
+        if ("status" in cg) { row.className = "wrapper-cg-" + cg.status; }
+        let cells = new Array(5);
+        for (let j = 0; j < cells.length; j++) { cells[j] = row.insertCell(j); }
+        for (let j = 0; j < span_elements.length; j++) { cells[j].appendChild(a_elements[j]); }
     }
 
     parent.appendChild(table);
 }
 
-function get_cgs_stats(cgs){
 
+function get_cgs_stats(cgs){
     let mode_stats = new Object();
     let mode_type_stats = new Object();
     let region_stats = new Object();
-    let region_group_stats = new Object();
+    let regions_group_stats = new Object();
     let player_stats = new Object();
     let map_stats = new Object();
 
     player_stats.players = 0;
     player_stats.total = 0;
-
+    
     for (let i = 0; i < cgs.length; i++) {
         let cg = cgs[i];
 
         player_stats.players += cg.players;
         player_stats.total += cg.total;
-
-        // ignore empty maps
-        if (cg.players == 0) { continue; }
-
+    
         if (!(cg.map in map_stats)) { map_stats[cg.map] = 1; }
         else { map_stats[cg.map] += 1; }
 
@@ -346,8 +283,8 @@ function get_cgs_stats(cgs){
         if (!(cg.mode_type in mode_type_stats)) { mode_type_stats[cg.mode_type] = 1; }
         else { mode_type_stats[cg.mode_type] += 1; }
 
-        if (!(cg.region_group in region_group_stats)) { region_group_stats[cg.region_group] = 1; }
-        else { region_group_stats[cg.region_group] += 1; }
+        if (!(cg.regions_group in regions_group_stats)) { regions_group_stats[cg.regions_group] = 1; }
+        else { regions_group_stats[cg.regions_group] += 1; }
 
         if (!(cg.region in region_stats)) { region_stats[cg.region] = 1;}
         else { region_stats[cg.region] += 1; }
@@ -357,13 +294,14 @@ function get_cgs_stats(cgs){
         "mode_stats": mode_stats,
         "mode_type_stats": mode_type_stats,
         "region_stats": region_stats,
-        "region_group_stats": region_group_stats,
+        "regions_group_stats": regions_group_stats,
         "player_stats": player_stats,
         "map_stats": map_stats
     }
 }
 
-function compare_cgs(a, b, cgs) {
+
+function compare_cgs_popularity(a, b, cgs) {
     let cgs_stats = get_cgs_stats(cgs);
 
     // const acceptable_player_ratio = 0.8;
@@ -391,17 +329,17 @@ function compare_cgs(a, b, cgs) {
         }
 
         return a.mode_type.localeCompare(b.mode_type);
-
+        
 
     } else if (
-        (a.region_group !== b.region_group) &&
+        (a.regions_group !== b.regions_group) &&
         (a.regions_group_preference != b.regions_group_preference)
     ) {
         // more preferred region group on top
         return b.regions_group_preference - a.regions_group_preference;
-
+    
     } else if (
-        (a.region_group !== b.region_group) &&
+        (a.regions_group !== b.regions_group) &&
         (cgs_stats.region_stats[a.region] != cgs_stats.region_stats[b.region])
     ) {
         // more popular region on top
@@ -414,7 +352,7 @@ function compare_cgs(a, b, cgs) {
     } else if (a.mode !== b.mode) {
         // alphabetical ordering of modes
         return a.mode.localeCompare(b.mode);
-
+        
     } else if (b.total != a.total) {
         // higher total on top
         return b.total - a.total;
@@ -424,13 +362,13 @@ function compare_cgs(a, b, cgs) {
 }
 
 
-function compare_cgs_2(a, b) {
+function compare_cgs_name(a, b) {
 
     if (b.map !== a.map) {
         return a.map.localeCompare(b.map);
 
-    } else if (a.region_group !== b.region_group) {
-        return a.region_group.localeCompare(b.region_group);
+    } else if (a.regions_group !== b.regions_group) {
+        return a.regions_group.localeCompare(b.regions_group);
 
     } else if (a.mode_type !== b.mode_type) {
         return a.mode_type.localeCompare(b.mode_type);
@@ -438,12 +376,12 @@ function compare_cgs_2(a, b) {
     } else if (a.mode !== b.mode) {
         return a.mode.localeCompare(b.mode);
     }
-
+    
     return 0;
 }
 
 
-function polish_cgs(cgs, mode_type, region_group) {
+function polished_cgs(cgs, mode_type, regions_group) {
 
     //  region / short / regions_group index / preference (used for lucky only)
     const regions_global = {
@@ -468,8 +406,8 @@ function polish_cgs(cgs, mode_type, region_group) {
         "BHN":  ["Arabia",      9,      5]
     };
 
-    //  region_group / preference (used for ordering)
-    const regions_group = [
+    //  regions_group / preference (used for ordering)
+    const regions_groups_global = [
         ["us-east",     10],
         ["us-west",     8],
         ["eu",          11],
@@ -493,7 +431,7 @@ function polish_cgs(cgs, mode_type, region_group) {
         6:  ["infect",  1],
         7:  ["race",    4],
         8:  ["lms",     3],
-        9:  ["simon",   4],
+        9:  ["simon",   4], 
         10: ["gun",     3],
         11: ["prop",    4],
         12: ["boss",    4],
@@ -503,7 +441,7 @@ function polish_cgs(cgs, mode_type, region_group) {
         16: ["koth",    3],
         17: ["oitc",    3],
         18: ["trade",   5],
-        19: ["kc",      2],
+        19: ["kc",      2], 
         20: ["de",      2],
         21: ["sharp",   3],
         22: ["traitor", 4],
@@ -513,7 +451,7 @@ function polish_cgs(cgs, mode_type, region_group) {
         26: ["sdm",     2],
         27: ["kranked", 3],
         28: ["tdf",     2],
-        29: ["dep_ffa", 3],
+        29: ["dep_ffa", 3], 
         33: ["chs",     3],
         34: ["bhffa",   3],
         35: ["zom",     6]
@@ -533,185 +471,189 @@ function polish_cgs(cgs, mode_type, region_group) {
 
     for (let i = 0; i < cgs.games.length; i++) {
         let cg = cgs.games[i];
-        let custom_game = new Object();
+        let cg_2 = new Object();
 
-        // ignore pubs
-        if (cg[4].c == 0) { continue; }
+        cg_2.players = cg[2];
+        cg_2.total = cg[3];
+        cg_2.map = cg[4].i;
+        cg_2.link = cg[0];
+        cg_2.public = cg[4].c;
+        
+        if ("ds" in cg[4]) { cg_2.dedicated = cg[4].ds; }
+        if ("pw" in cg[4]) { cg_2.password = cg[4].pw; }
+        if (cg_2.total > 16 && cg_2.total < 40) { cg_2.verified = true; }
 
-        custom_game.players = cg[2];
-        custom_game.total = cg[3];
-        custom_game.map = cg[4].i;
-        custom_game.link = cg[0];
+        if (
+            (cg_2.public == 0) &&
+            (show_pubs == false)
+        ) {
+            continue;
+        }
+
+        // browser dies without this
+        if (cg_2.players == 0) {
+            continue;
+        }
 
         let region = cg[0].split(":")[0];
         if (region in regions_global) {
-            custom_game.region = regions_global[region][0];
-            custom_game.region_preference = regions_global[region][2];
-            custom_game.region_group = regions_group[regions_global[region][1]][0];
-            custom_game.regions_group_preference = regions_group[regions_global[region][1]][1];
-
-            if (region_group !== undefined) {
-                if (custom_game.region_group !== region_group) {
+            cg_2.region = regions_global[region][0];
+            cg_2.region_preference = regions_global[region][2];
+            cg_2.regions_group = regions_groups_global[regions_global[region][1]][0];
+            cg_2.regions_group_preference = regions_groups_global[regions_global[region][1]][1];
+            
+            if (regions_group != null) {
+                if (cg_2.regions_group != regions_group) {
                     continue;
                 }
             }
 
-        } else if (region_group === undefined) {
-            custom_game.region = region;
-            custom_game.region_preference = 0;
-            custom_game.region_group = "";
-            custom_game.regions_group_preference = 0;
+        } else if (regions_group == null) {
+            cg_2.region = region;
+            cg_2.region_preference = 0;
+            cg_2.regions_group = "";
+            cg_2.regions_group_preference = 0;
+
         } else {
             continue;
         }
 
         if (cg[4].g in modes_global) {
-            custom_game.mode = modes_global[cg[4].g][0];
-            custom_game.mode_type = modes_types_global[modes_global[cg[4].g][1]];
-
-            if (mode_type !== undefined) {
-                if (custom_game.mode_type !== mode_type) {
+            cg_2.mode = modes_global[cg[4].g][0];
+            cg_2.mode_type = modes_types_global[modes_global[cg[4].g][1]];
+            
+            if (mode_type != null) {
+                if (cg_2.mode_type != mode_type) {
                     continue;
                 }
             }
-
-        } else if (mode_type === undefined) {
-            custom_game.mode = "???";
-            custom_game.mode_type = "";
+            
+        } else if (mode_type == null) {
+            cg_2.mode = "???";
+            cg_2.mode_type = "";
 
         } else {
             continue;
         }
 
-        if ("ds" in cg[4]) { custom_game.dedicated = cg[4].ds; }
-        if ("pw" in cg[4]) { custom_game.password = cg[4].ds; }
-        if (custom_game.total > 16 && custom_game.total < 40) { custom_game.verified = 1; }
-        cgs_local.push(custom_game);
+        cgs_local.push(cg_2);
     }
 
     return cgs_local;
 }
 
 
-function sort_cgs(cgs, mode_type, region_group) {
-    let cgs_local = polish_cgs(cgs, mode_type, region_group);
-    // mode_type and region_group are ideally not used after this
+function sorted_cgs(cgs) {
+    // sort lobbies by popularity
+    cgs.sort((a, b) => compare_cgs_popularity(a, b, cgs));
 
-    // sort custom games according to popularity and group by common properties
-    cgs_local.sort((a, b) => compare_cgs(a, b, cgs_local));
+    // tag lobbies with unique, unique_not_full and star
+    let cg_unique = new Set();
+    let cg_unique_not_full = new Set();
+    for (let i = 0; i < cgs.length; i++) {
+        let cg = cgs[i];
 
-    // show all unique non full maps
-    let cg_maps = new Set();
-    let cg_maps_not_full = new Object();
+        if (!cg_unique.has(cg.map)) {
+            cg_unique.add(cg.map);
+            cg.unique = true;
+        }
 
-    for (let i = 0; i < cgs_local.length; i++) {
-        let cg = cgs_local[i];
-
-        if (!cg_maps.has(cg.map)) {
-            cg_maps.add(cg.map);
-            if (cg.players < cg.total) {
-                cg_maps_not_full[cg.map] = 1;
-                cg.unique_non_empty = 1;
-                cg.star = 1;
-            } else {
-                // nothing
-            }
-        } else if (!(cg.map in cg_maps_not_full)) {
-            if (cg.players < cg.total) {
-                cg_maps_not_full[cg.map] = 1;
-                cg.unique = 1;
-                cg.star = 1;
-            }
+        if (
+            !(cg_unique_not_full.has(cg.map)) &&
+            (cg.players < cg.total) &&
+            (cg.players > 0)
+        ) {
+            cg_unique_not_full.add(cg.map);
+            cg.unique_not_full = true;
+            cg.star = true;
         }
     }
-
+    
+    // new cgs which we will populate with sorted lobbies
     let cgs_local_2 = new Array();
 
-    // populate cgs_local_2 with star maps and
-    // show repeats only if they meet a strict criteria
-    let repeats_allowed = 10;
-    let repeats_min_player_ratio = 0.4;
-    // let repeats_min_players = 4;
+    let repeats_allowed = 10;           // maximum number of repeats allowed per map
+    let repeats_min_player_ratio = 0.4; // ratio of players below which repeat lobbies are ignored
+    let repeats_min_players = 0;        // number of players below which repeat lobbies are ignored
 
-    for (let i = 0; i < cgs_local.length; i++) {
-        let cg = cgs_local[i];
+    // append starred lobbies and repeats
+    for (let i = 0; i < cgs.length; i++) {
+        let cg = cgs[i];
 
         if (!("star" in cg)) { continue; }
         if ("done" in cg) { continue; }
 
+        cg.done = true;
         cgs_local_2.push(cg);
 
-        // make sure at least one of mode or region is unique for lobbies of the same map
-        // before considering them for repeats
-        // let mode_regions = new Set();
-        // mode_regions.add(cg.mode + "_" + cg.region_group);
+        // for repeats, check if at least one of mode or region is unique
+        let mode_regions = new Set();
+        mode_regions.add(cg.mode + "_" + cg.regions_group);
 
-        // as an alternative to mode_regions, use only region (since most maps have cyclic modes)
-        // don't ponder so much over maps which have multiple lobbies
+        // an alternative to mode_regions for repeats, check if region is unique
         let only_regions = new Set();
-        only_regions.add(cg.region_group);
-
+        only_regions.add(cg.regions_group);
+        
+        // search for repeats
         let repeat_count = 0;
-        for (let j = 0; j < cgs_local.length; j++) {
-            let cg_2 = cgs_local[j];
+        for (let j = 0; j < cgs.length; j++) {
+            let cg_2 = cgs[j];
 
+            if (cg.map != cg_2.map) { continue; }
             if (i == j) { continue; }
             if ("done" in cg_2) { continue; }
+            if (only_regions.has(cg_2.regions_group)) { continue; }
+            // if (mode_regions.has(cg_2.mode + "_" + cg_2.regions_group)) { continue; }
+            
+            if (
+                (cg_2.players < cg_2.total) && 
+                (cg_2.players >= repeats_min_players) && 
+                ((cg_2.players / cg.players) >= repeats_min_player_ratio) && 
+                (repeat_count < repeats_allowed)
+            ) {
+                cg_2.done = true;
+                cg_2.status = "repeated";
+                cgs_local_2.push(cg_2);
 
-            if (cg.map == cg_2.map) {
-                // if (mode_regions.has(cg_2.mode + "_" + cg_2.region_group)) {
-                //     cg_2.done = 1;
-                //     continue;
-                // }
-
-                if (only_regions.has(cg_2.region_group)) {
-                    cg_2.done = 1;
-                    continue;
-                }
-
-                if (
-                    (cg_2.players < cg_2.total) &&
-                    // (cg_2.players >= repeats_min_players) &&
-                    ((cg_2.players / cg.players) >= repeats_min_player_ratio) &&
-                    (repeat_count < repeats_allowed)
-                ) {
-                    cg_2.star = 1;
-                    cg_2.done = 1;
-                    cg_2.repeated = 1;
-                    cgs_local_2.push(cg_2);
-
-                    // mode_regions.add(cg_2.mode + "_" + cg_2.region_group);
-                    only_regions.add(cg_2.region_group);
-                    repeat_count += 1;
-                }
+                mode_regions.add(cg_2.mode + "_" + cg_2.regions_group);
+                only_regions.add(cg_2.regions_group);
+                repeat_count += 1;
             }
         }
     }
 
-    // tag all full games and populate cgs_local_2 with them (at the end of the array)
-    // here we don't care about their popularity, only of grouping by map name
-    cgs_local.sort((a, b) => compare_cgs_2(a, b, cgs_local));
-
-    for (let i = 0; i < cgs_local.length; i++) {
-        let cg = cgs_local[i];
-
+    // sort lobbies by map
+    cgs.sort((a, b) => compare_cgs_name(a, b, cgs));
+    
+    // append full lobbies
+    for (let i = 0; i < cgs.length; i++) {
+        let cg = cgs[i];
+        if ("done" in cg) { continue; }
         if (cg.players == cg.total) {
-            cg.star = 1;
-            cg.full = 1;
+            cg.status = "full";
+            cg.done = true;
             cgs_local_2.push(cg);
         }
     }
 
-    // push all the non starred lobbies to cgs_local_2 too
-    // tag the ones that are non empty
-    for (let i = 0; i < cgs_local.length; i++) {
-        let cg = cgs_local[i];
+    // append non empty lobbies
+    for (let i = 0; i < cgs.length; i++) {
+        let cg = cgs[i];
+        if ("done" in cg) { continue; }
+        if (cg.players > 0) {
+            cg.status = "non-empty";
+            cg.done = true;
+            cgs_local_2.push(cg);
+        }
+    }
 
-        if (!("star" in cg)) {
-            if (cg.players > 0) {
-                cg.star = 1;
-                cg.non_empty = 1;
-            }
+    // append empty lobbies
+    for (let i = 0; i < cgs.length; i++) {
+        let cg = cgs[i];
+        if ("done" in cg) { continue; }
+        if (cg.players == 0) {
+            cg.status = "empty";
+            cg.done = true;
             cgs_local_2.push(cg);
         }
     }
@@ -720,49 +662,68 @@ function sort_cgs(cgs, mode_type, region_group) {
 }
 
 
-async function populate_wrapper(mode_type, region_group) {
-
-    // update cgs_global if update_cgs flag is set to true
-    if (update_cgs) {
-        await update_cgs_global();
+async function populate_wrapper(mode_type, regions_group) {
+    // update cgs_global if required
+    if (update_cgs == true) {
+        let update_cgs_return = await update_cgs_global();
         update_cgs = false;
     }
 
-    if (document.getElementById("cgs") === null) {
-        // only populate if table doesn't already exist
-        let cgs_local = sort_cgs(cgs_global, mode_type, region_group);
-        populate_table(cgs_local);
+    // update global variables
+    latest_mode_type = mode_type;
+    latest_regions_group = regions_group;
+
+    // sort cgs and populate table
+    let cgs_local = polished_cgs(cgs_global, mode_type, regions_group);
+    cgs_local = sorted_cgs(cgs_local);
+    populate_table(cgs_local);
+}
+
+
+function main3() {
+    try {
+        // create wrapper and table
+        let serverHolder = document.querySelector("#serverHolder");
+        let cgs = document.querySelector("#cgs");
+        if (serverHolder && !cgs) {
+            let table = document.createElement("table");
+            table.id = "cgs";
+            table.className = "cgs-table";
+            let parent = document.createElement("div");
+            parent.className = "wrapper-browser-inner";
+            let grandparent = document.createElement("div");
+            grandparent.className = "wrapper-browser";
+            let greatgrandparent = serverHolder.parentNode;
+            parent.appendChild(table);
+            grandparent.appendChild(parent);
+            greatgrandparent.appendChild(grandparent);
+            serverHolder.remove();
+        }
+
+        let cgs_is_populated = document.querySelector("#cgs > tbody > tr");
+        if (!cgs_is_populated) {
+            populate_wrapper();
+            timeout_fetching_cgs();
+        }
+
+    } catch (e) {
+        // do nothing
     }
 }
 
 
 async function main2() {
-
     let serverHolder_bool = false;
-
     const observer = new MutationObserver(function() {
-
         let serverHolder = document.querySelector("#serverHolder");
-
-        if (serverHolder && !serverHolder_bool) {
-            populate_wrapper();
-            // server browser resets after a few seconds for some reason
-            setTimeout(populate_wrapper, 1000);
-            setTimeout(populate_wrapper, 2000);
-            setTimeout(populate_wrapper, 3000);
-            setTimeout(populate_wrapper, 4000);
-            setTimeout(populate_wrapper, 5000);
-            setTimeout(populate_wrapper, 6000);
-            setTimeout(populate_wrapper, 7000);
-            setTimeout(populate_wrapper, 8000);
-            setTimeout(populate_wrapper, 9000);
+        let cgs = document.querySelector("#cgs");
+        if (serverHolder && !cgs && !serverHolder_bool) {
+            main3();
+            // server browser window clears after a few seconds for some reason, try repeatedly
+            for (let i = 1; i < 20; i++) { setTimeout(main3, i * 1000); }
             serverHolder_bool = true;
         }
-
-
-        if (serverHolder_bool) {
-            observer.disconnect();
-        }
+        if (serverHolder_bool) { observer.disconnect(); }
     });
 
     const target = document.body;
@@ -775,8 +736,6 @@ async function main2() {
 
     // timeout after a few seconds
     setTimeout(observer.disconnect, 15000);
-
-    timeout_fetching_cgs();
 }
 
 
@@ -788,20 +747,13 @@ function main() {
     document.head.appendChild(vm_css_2);
 
     let menuBtnBrowser_bool = false;
-
     const observer = new MutationObserver(function() {
-
         let menuBtnBrowser = document.querySelector("#menuBtnBrowser");
-
         if (menuBtnBrowser && !menuBtnBrowser_bool) {
             menuBtnBrowser.addEventListener("click", main2, false);
             menuBtnBrowser_bool = true;
         }
-
-
-        if (menuBtnBrowser_bool) {
-            observer.disconnect();
-        }
+        if (menuBtnBrowser_bool) { observer.disconnect(); }
     });
 
     const target = document.body;
