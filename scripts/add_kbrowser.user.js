@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     17
+// @version     18
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -197,7 +197,7 @@ async function update_cgs_global() {
 
 function timeout_fetching_cgs(interval) {
     update_cgs = true;
-    setTimeout( function() {timeout_fetching_cgs}, interval);
+    setTimeout( timeout_fetching_cgs, interval);
 }
 
 
