@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     19
+// @version     19.1
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -44,6 +44,11 @@ a { text-decoration: none; }
 a:hover { text-decoration: none; }
 
 
+.wrapper-browser {
+    width: 42em;
+    margin: auto;
+}
+
 .cgs-table {
     border-collapse: collapse;
     border: 0;
@@ -78,11 +83,8 @@ a:hover { text-decoration: none; }
 }
 
 .wrapper-browser {
-    width: auto;
     height: auto;
-    /* margin: auto; */
     margin-top: 0;
-    margin-left: 0.5em;
     padding: 1em 1em;
     border-radius: 0.5em;
     background-color: #ffffffbb;
