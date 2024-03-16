@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/add_kbrowser.user.js
-// @version     18
+// @version     19
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -40,6 +40,10 @@ SOFTWARE.
 */
 
 var style_2 = `
+a { text-decoration: none; }
+a:hover { text-decoration: none; }
+
+
 .cgs-table {
     border-collapse: collapse;
     border: 0;
@@ -50,8 +54,16 @@ var style_2 = `
 .cgs-table > tbody > tr > th,
 .cgs-table > thead > tr > td,
 .cgs-table > tbody > tr > td {
-    padding: 0 0.5em 0 0.5em;
+    padding: 0 0 0 0;  /* has non zero padding without this for some reason */
     height: 35px;
+}
+
+.cgs-table > thead > tr > th > a,
+.cgs-table > tbody > tr > th > a,
+.cgs-table > thead > tr > td > a,
+.cgs-table > tbody > tr > td > a {
+    padding: 0.3em 0.5em;
+    display: block;
 }
 
 .cgs-table > thead > tr,
@@ -126,17 +138,17 @@ var style_2 = `
 
 .cgs-table > thead > tr > th:nth-child(1),
 .cgs-table > tbody > tr > td:nth-child(1) {
-    width: 5em;
-    max-width: 5em;
-    min-width: 5em;
+    width: 6em;
+    max-width: 6em;
+    min-width: 6em;
     text-align: right;
 }
 
 .cgs-table > thead > tr > th:nth-child(2),
 .cgs-table > tbody > tr > td:nth-child(2) {
-    width: 22em;
-    max-width: 22em;
-    min-width: 22em;
+    width: 21em;
+    max-width: 21em;
+    min-width: 21em;
 }
 
 .cgs-table > thead > tr > th:nth-child(3),
@@ -148,16 +160,16 @@ var style_2 = `
 
 .cgs-table > thead > tr th:nth-child(4),
 .cgs-table > tbody > tr td:nth-child(4) {
-    width: 3em;
-    max-width: 3em;
-    min-width: 3em;
+    width: 5em;
+    max-width: 5em;
+    min-width: 5em;
 }
 
 .cgs-table > thead > tr th:nth-child(5),
 .cgs-table > tbody > tr td:nth-child(5) {
-    width: 1em;
-    max-width: 1em;
-    min-width: 1em;
+    width: 2em;
+    max-width: 2em;
+    min-width: 2em;
 }
 
 div#serverHolder,
@@ -218,9 +230,10 @@ function populate_table(cgs) {
         let cg_players = "cg-players";
         let cg_special = "";
         if ("password" in cg) { cg_special = "🔒" }
-        else if (cg.public == 0) { cg_special = "⛏️" }
+        else if (cg.public == 0) { cg_special = "🛠️" }
         else if ("verified" in cg) { cg_special = "💙"}
-        else if ("dedicated" in cg) { cg_special = "★" }
+        else if ("extra_large" in cg) { cg_special = "🏟️" }
+        else if ("dedicated" in cg) { cg_special = "🔸" }
         
         // create nodes
         let span_elements = new Array();
@@ -481,7 +494,8 @@ function polished_cgs(cgs, mode_type, regions_group) {
         
         if ("ds" in cg[4]) { cg_2.dedicated = cg[4].ds; }
         if ("pw" in cg[4]) { cg_2.password = cg[4].pw; }
-        if (cg_2.total > 16 && cg_2.total < 40) { cg_2.verified = true; }
+        if (cg_2.total > 16 && cg_2.total <= 20) { cg_2.verified = true; }
+        if (cg_2.total > 20) { cg_2.extra_large = true; }
 
         if (
             (cg_2.public == 0) &&
