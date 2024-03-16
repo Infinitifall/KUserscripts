@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui.user.js
-// @version     5.1
+// @version     6.0
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -125,10 +125,12 @@ function main() {
 
     let customCSS_bool = false
     let bundlePop_bool = false;
+    let expertModeBtn_bool = false;
 
     const observer = new MutationObserver(function() {
         let customCSS = document.getElementById("customCSS");
         let bundlePop = document.getElementById("bundlePop");
+        let expertModeBtn = document.getElementById("expertModeBtn");
 
         if (customCSS && !customCSS_bool) {
             // if mod or map is using a custom stylesheet, remove vm_css_1
@@ -146,7 +148,13 @@ function main() {
             }
         }
 
-        if (customCSS_bool && bundlePop_bool) {
+        if (expertModeBtn && !expertModeBtn_bool) {
+            // get out of stupid mode
+            expertModeBtn.click();
+            expertModeBtn_bool = true;  // probably doesn't matter, since page should reload on click
+        }
+
+        if (customCSS_bool && bundlePop_bool && expertModeBtn_bool) {
             observer.disconnect();
         }
     });
