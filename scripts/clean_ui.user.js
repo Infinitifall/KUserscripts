@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui.user.js
-// @version     6.0
+// @version     6.1
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -16,7 +16,7 @@
 
 var style_1 = `
 div#headerRightSocial,
-div#streamContainer,
+div#adCon,
 div#signedOutHeaderBar,
 div#inviteButton,
 div#menuBtnJoin,
@@ -50,6 +50,10 @@ div#aContainer,
 div#topRightAdHolder
 {
     display:none !important;
+}
+
+div#streamContainer {
+    background: none;
 }
 
 div#menuItemContainer {
