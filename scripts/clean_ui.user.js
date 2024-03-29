@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui.user.js
-// @version     6.1
+// @version     6.2
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -38,8 +38,6 @@ div#premiumPop,
 div#popupBack,
 div#frvrMenuMobileHolder,
 div#endBPLayout,
-div#gameNameHolder,
-div#seasonLabel,
 div#merchHolder,
 .progressBar,
 div#mLevelCont,
