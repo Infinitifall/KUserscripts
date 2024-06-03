@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
-// @version     6.2
+// @version     6.3
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -26,7 +26,6 @@ div#tlInfHold,
 .terms:nth-child(3),
 .verticalSeparatorInline,
 .menuItem:nth-child(2),
-.menuItem:nth-child(5),
 .menuItem:nth-child(3),
 div#txtBubble,
 img#loadEditrBtn,
