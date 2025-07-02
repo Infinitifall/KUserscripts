@@ -25,15 +25,3 @@ Replaces the default server browser with an embedded KBrowser, which focuses on 
 ## Click to install [no_extra_click](https://github.com/Infinitifall/KUserscripts/raw/main/scripts/no_extra_click.user.js)
 
 Gets rid of the extraneous chooser popup when clicking on the server finder, instead directly opens it.
-
-
-## Click to install [no_twitch](https://github.com/Infinitifall/KUserscripts/raw/main/scripts/no_twitch.user.js)
-
-Removes the Twitch embed from the social hub, saving performance. To save bandwidth you'll need to install a [request blocker](https://addons.mozilla.org/en-US/firefox/addon/request-blocker-we/) and block Twitch domains.
-
-
-## Click to install [clean_ui_social](https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_social.user.js)
-
-Removes clutter from social hub.
-
-![Screenshot of clean_ui_social in action](assets/clean_ui_social.jpeg)

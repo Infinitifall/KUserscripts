@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
-// @version     6.3
+// @version     7.0
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -14,119 +14,103 @@
 // ==/UserScript==
 
 
-var style_1_1 = `
-div#headerRightSocial,
-div#adCon,
-div#signedOutHeaderBar,
-div#inviteButton,
-div#menuBtnJoin,
-div#policeButton,
-div#tlInfHold,
-.terms:nth-child(1),
-.terms:nth-child(3),
-.verticalSeparatorInline,
-.menuItem:nth-child(2),
-.menuItem:nth-child(3),
-div#txtBubble,
-img#loadEditrBtn,
-div#loadTipsHolder,
-div#loadInfoLHolder,
-div#bundlePop,
-div#premiumPop,
-.dropsPop,
-div#popupBack,
-div#frvrMenuMobileHolder,
-div#endBPLayout,
-div#merchHolder,
-.progressBar,
-div#mLevelCont,
-div#krInfo,
-.junkInfo,
-div#signedInHeaderBar .verticalSeparator,
-div#aContainer,
-div#topRightAdHolder
+let style_1 = `
+div#homeStoreAd,
+div#battlepassAd,
+div#updateAd,
+div#streamContainer,
+div#streamContainerNew
 {
-    display:none !important;
+  display: none !important;
 }
 
-div#streamContainer {
-    background: none;
+
+div#aHider,
+div#topRightAdHolder
+{
+  display: none  !important;
+}
+
+
+div#gameNameHolder,
+.menuItem:nth-child(1),
+.menuItem:nth-child(2)
+{
+  display: none;
+}
+
+.menuItem {
+  scale: 0.8;
 }
 
 div#menuItemContainer {
-    top:0;
+  top: 15%;
+  bottom: 30%;
+  border-radius: 0 1em 1em 0;
+  width: 110px;
 }
 
-div#spectButton {
-    top: 20px !important;
-    left: calc(100% - 250px) !important;
-}
 
-div#menuItemContainer
+div#inviteButton,
+div#menuBtnJoin,
+div#menuBtnQuickMatch
 {
-    top: 10% !important;
-    bottom: 40% !important;
-    left: -10px !important;
-    font-size: 14px !important;
-    border-radius: 0 20px 20px 0 !important;
+  display: none;
 }
 
-div#chatHolder {
-    left: 10px !important;
+div#matchInfoHolder {
+  width: 800px;
 }
 
-div#voiceDisplay {
-    left: 360px !important;
+div#subLogoButtons {
+  bottom: 15px;
 }
 
-div#termsInfo {
-    padding: 5px 10px !important;
-    height: 25px !important;
+
+div#menuClassContainer{
+  scale: 0.8;
+  right: -40px;
+  bottom: 20%;
 }
 
-.terms {
-    font-size: 12px !important;
+div#customizeButton {
+  width: 350px;
+}
+
+
+.junkInfo,
+.verticalSeparator:nth-child(6),
+div#menuLvlHold,
+div#mLevelCont
+{
+  display: none;
+}
+
+div#menuKRCount {
+  display: block;
 }
 
 div#signedInHeaderBar {
-    height: 50px !important;
+  height: 50px;
+  width: 370px;
 }
 
-div#mailContainer {
-    padding-right: 20px !important;
-}
-
-signedInHeaderBar,
-div#menuItemContainer,
-div#headerRight,
-div#termsInfo,
-div#signedInHeaderBar
-{
-    background: #000b !important;
-}
-
-div#mapInfoHld {
-    border: none !important;
-}
-
-.krInfo {
-    padding-top: 12px !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
+div#mapInfoHolder {
+  opacity: 0.2;
 }
 `;
 
 
 function main() {
     // add custom style sheet to override default one
-    let vm_css_1_1 = document.createElement('style');
-    vm_css_1_1.innerHTML = style_1_1;
-    vm_css_1_1.id = "vm_css_1_1";
-    document.head.appendChild(vm_css_1_1);
+    let vm_css_1 = document.createElement('style');
+    vm_css_1.innerHTML = style_1;
+    vm_css_1.id = "vm_css_1_aggressive";
+    document.head.appendChild(vm_css_1);
 
-    let customCSS_bool = false
-    let bundlePop_bool = false;
-    let expertModeBtn_bool = false;
+    let customCSS_bool = false;      // whether custom css has been added
+    let bundlePop_bool = false;      // whether popup has been disabled
+    let expertModeBtn_bool = false;  // whether expert mode has been disabled
 
     const observer = new MutationObserver(function() {
         let customCSS = document.getElementById("customCSS");
@@ -135,7 +119,7 @@ function main() {
 
         if (customCSS && !customCSS_bool) {
             // if mod or map is using a custom stylesheet, remove customCSS
-            // vm_css_1_1.remove();
+            // vm_css_1.remove();
             customCSS.remove();
             customCSS_bool = true;
         }
