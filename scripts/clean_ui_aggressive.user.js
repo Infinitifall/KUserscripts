@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
-// @version     7.0
+// @version     7.1
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -18,6 +18,8 @@ let style_1 = `
 div#homeStoreAd,
 div#battlepassAd,
 div#updateAd,
+div#krDiscountAd,
+div#doubleRaidDropsAd,
 div#streamContainer,
 div#streamContainerNew
 {
