@@ -4,7 +4,7 @@
 // @homepageURL https://github.com/Infinitifall/KUserscripts
 // @author      Infinitifall
 // @downloadURL https://github.com/Infinitifall/KUserscripts/raw/main/scripts/clean_ui_aggressive.user.js
-// @version     7.1
+// @version     7.11
 // @run-at      document-end
 // @grant       GM_addStyle
 // @include     https://krunker.io/*
@@ -94,7 +94,7 @@ div#menuKRCount {
 
 div#signedInHeaderBar {
   height: 50px;
-  width: 370px;
+  width: 440px;
 }
 
 div#mapInfoHolder {
